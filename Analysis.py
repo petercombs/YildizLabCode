@@ -33,6 +33,8 @@ from pylab import figure, colorbar, title, plot, savefig, show, legend, \
 from time import time
 from multiprocessing import Pool
 
+numpy.seterr(invalid='ignore')
+
 box1_default = (slice(0,256),slice(0,512))
 box2_default = (slice(256, 512), slice(0, 512))
 
