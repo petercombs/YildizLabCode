@@ -33,7 +33,7 @@ from pylab import figure, colorbar, title, plot, savefig, show, legend, \
 from time import time
 from multiprocessing import Pool
 
-numpy.seterr(invalid='ignore')
+np.seterr(invalid='ignore')
 
 box1_default = (slice(0,256),slice(0,512))
 box2_default = (slice(256, 512), slice(0, 512))
@@ -352,8 +352,8 @@ def mpt(im_in, thresh = 1.0, im_start=0, im_end = None, **kwargs):
                     exits[j] = exit
 
                     # If fit is too close to the edge of the frame, then ignore it
-                    if not (padding < x2[j] < shape(im_in)[0] - padding) \
-                       or not (padding < y2[j] < shape(im_in)[1] - padding):
+                    if (not (padding < x2[j] < shape(im_in)[0] - padding)) \
+                       or (not (padding < y2[j] < shape(im_in)[1] - padding)):
                         x2[j] = float("nan")
                         y2[j] = float("nan")
                         exits[j] = -1
