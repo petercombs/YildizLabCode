@@ -352,8 +352,8 @@ def mpt(im_in, thresh = 1.0, im_start=0, im_end = None, **kwargs):
                     exits[j] = exit
 
                     # If fit is too close to the edge of the frame, then ignore it
-                    if (not (padding < x2[j] < shape(im_in)[0] - padding)) \
-                       or (not (padding < y2[j] < shape(im_in)[1] - padding)):
+                    if (not (padding < x2[j] < shape(im_in)[1] - padding)) \
+                       or (not (padding < y2[j] < shape(im_in)[0] - padding)):
                         x2[j] = float("nan")
                         y2[j] = float("nan")
                         exits[j] = -1
