@@ -78,6 +78,9 @@ if __name__ == "__main__":
                 default = 20, type="float",
                 help = "Maximum allowed inter-color colocalization distance "
                         "in the 2nd round")
+    parser.add_option('-O', '--max-outlier-r', dest="outlier",
+                      default = 20, type="float",
+                      help="")
     parser.add_option('-q', '--quiet', dest = "quiet", 
                 action = "store_true", default = False)
     parser.add_option('-o', '--output-file', dest="output", default=None)
@@ -438,6 +441,22 @@ if __name__ == "__main__":
     except IndexError:
         print "Not enough data!"
     finally:
+        # Remove outliers from plots and output. Presumably, this could have a
+        # different value from max_R. Otherwise, I'm not sure what the
+        # difference is, but Ahmet did ask for it.
+
+        sel2 = (diffx**2 + diffy**2) < opts.outlier**2
+        xl = xl[sel2]
+        yl = yl[sel2]
+        xr = xr[sel2]
+        yr = yr[sel2]
+        varxl = varxl[sel2]
+        varxr = varxr[sel2]
+        newx = newx[sel2]
+        newy = newy[sel2]
+        diffx = diffx[sel2]
+        diffy = diffy[sel2]
+
         try:
             print "Saving to ", os.path.dirname(fname)+'.mat'
             output_dict = {}
