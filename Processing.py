@@ -211,6 +211,8 @@ if __name__ == '__main__':
 
 
 	(opts, args) = parser.parse_args()
+
+    DEBUG = opts.debug
 	
 	sys.stderr.write( "Setting up list\n")
 	val = 0
