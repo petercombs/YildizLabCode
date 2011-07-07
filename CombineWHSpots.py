@@ -448,6 +448,7 @@ if __name__ == "__main__":
         # difference is, but Ahmet did ask for it.
 
         sel2 = (diffx**2 + diffy**2) < opts.outlier**2
+        sel2 = sel2.squeeze()
         xl = xl[sel2]
         yl = yl[sel2]
         xr = xr[sel2]
@@ -456,6 +457,8 @@ if __name__ == "__main__":
         varxr = varxr[sel2]
         newx = newx[sel2]
         newy = newy[sel2]
+        goodx = goodx[sel2]
+        goody = goody[sel2]
         diffx = diffx[sel2]
         diffy = diffy[sel2]
 
