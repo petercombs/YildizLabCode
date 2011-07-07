@@ -41,28 +41,28 @@ x655m, y655m = mapping(x655, y655)
 
 
 mmdOrigz = sqrt((x585 - x585[~isnan(x585)][0] - x655 + x655[~isnan(x655)][0])**2 \
-				+ (y585 - y585[~isnan(y585)][0] - y655 + y655[~isnan(y655)][0])**2)*106
+                + (y585 - y585[~isnan(y585)][0] - y655 + y655[~isnan(y655)][0])**2)*106
 mmdRemapz = sqrt((x585 - x585[~isnan(x585)][0] - x655m + x655m[~isnan(x655m)][0])**2 \
-				+ (y585 - y585[~isnan(y585)][0] - y655m + y655m[~isnan(y655m)][0])**2)*106.6
+                + (y585 - y585[~isnan(y585)][0] - y655m + y655m[~isnan(y655m)][0])**2)*106.6
 
 mmdOrig = sqrt((x585 - x655)**2 \
-				+ (y585  - y655)**2)*Nm_per_pixels
+                + (y585  - y655)**2)*Nm_per_pixels
 mmdRemap = sqrt((x585 - x655m)**2 \
-				+ (y585 - y655m)**2)*Nm_per_pixels
+                + (y585 - y655m)**2)*Nm_per_pixels
 
 while True:
-	outname = raw_input('File to save remapped coordinates: ')	
-	if outname[-4:] == '.txt':
-		outfile = open(outname, 'w')
-		for x,y in zip(x655m, y655m):
-			outfile.write('%02f\t%02f\n'%(x * Nm_per_pixels, y * Nm_per_pixels))
-		break
-	elif outname[-4:] == '.mat':
-		from scipy.io import savemat
-		savemat(outname, {'x655_remap': x655m*Nm_per_pixels, 'y655_remap': y655m * Nm_per_pixels})
-		break
-	else:
-		print "Unrecognized extension.  Use .mat or .txt"
+    outname = raw_input('File to save remapped coordinates: ')  
+    if outname[-4:] == '.txt':
+        outfile = open(outname, 'w')
+        for x,y in zip(x655m, y655m):
+            outfile.write('%02f\t%02f\n'%(x * Nm_per_pixels, y * Nm_per_pixels))
+        break
+    elif outname[-4:] == '.mat':
+        from scipy.io import savemat
+        savemat(outname, {'x655_remap': x655m*Nm_per_pixels, 'y655_remap': y655m * Nm_per_pixels})
+        break
+    else:
+        print "Unrecognized extension.  Use .mat or .txt"
 plot(mmdOrig)
 plot(mmdRemap)
 legend(('Original Mismatch Distance', 'Remapped Mismatch Distance'))
