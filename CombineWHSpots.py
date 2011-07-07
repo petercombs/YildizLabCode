@@ -142,7 +142,7 @@ if __name__ == "__main__":
                                      float(line.split()[1]), 
                                      float(line.split()[-1]),
                                      int(lnum)) 
-                                for line, lnum in zip(file(fname), range(1,500)) 
+                                for lnum, line in enumerate(file(fname)) 
                                   if line[0].isdigit()]).T
             lnums -= 2
             tpmin, tpmax = int(min(lnums)), int(max(lnums))
@@ -153,6 +153,8 @@ if __name__ == "__main__":
                 #print tpmaxes
                 while len(timepoints[channel]) <= tpmax:
                     timepoints[channel].append([])
+                if len(xs) == 0:
+                        raise ValueError("Failed on reading somehow")
                 for x, y, n, lnum in zip(xs, ys, ns, lnums):
                     lnum = int(lnum)
                     if n < opts.min_brightness:
@@ -171,7 +173,7 @@ if __name__ == "__main__":
                     tpmins[framenum] = int(tpmin)
                     tpmaxes[framenum] = int(tpmax)
 
-                if len(xs) < 2: raise ValueError
+                if len(xs) < 2: raise ValueError("Bailing on too short")
 
                 if std(sqrt(diff(xs)**2 + diff(ys)**2)/sqrt(2)) < opts.max_std:
                     if mean(ns) < opts.min_brightness:
@@ -195,8 +197,8 @@ if __name__ == "__main__":
                     DQ_varbig_x.append(mean(xs)/opts.pxsize)
                     DQ_varbig_y.append(mean(ys)/opts.pxsize)
                     DQ_varbig_t.append(framenum)
-        except ValueError:
-            print "Not enough data in ", fname
+        except ValueError as blarg:
+            print "Not enough data in ", fname, blarg
             pass
         except:
             print "Failed on file", fname, "for some reason..."
