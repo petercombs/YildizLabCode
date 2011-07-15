@@ -1,12 +1,10 @@
 #!/Library/Frameworks/Python.framework/Versions/5.1.0/bin/python
 
-import sys
 from scipy.io import loadmat, savemat
 import Analysis
 from numpy import sqrt, zeros, round, ceil, shape, array, median, arange, mean
 from numpy.random import rand
 from os.path import basename
-from getopt import getopt
 from optparse import OptionParser
 
 #
@@ -47,17 +45,18 @@ parser.add_option('-F', '--full-screen', dest="trim_edge",
         action="store_false", 
         help="Do not trim the outermost edge of the frames")
 
-def fractioner_callback(option, opt_str, value, parser):
+def fractioner_callback(option, opt_str, value, the_parser):
     print option
     print opt_str
     print value
-    print parser
+    print the_parser
     if value.count(':'):
         start, step, stop = map(float, value.split(':'))
-        parser.values.fraction = arange(start, stop, step)
+        the_parser.values.fraction = arange(start, stop, step)
     else:
-        parser.values.fraction = array([float(value)])
-parser.add_option('-f', '--fraction', dest="fraction",type="string", 
+        the_parser.values.fraction = array([float(value)])
+
+parser.add_option('-f', '--fraction', dest="fraction", type="string", 
         help="Keep only the given fraction of the data (can accept" 
             " multiple values using slice notation)",
         action="callback", callback=fractioner_callback)
@@ -65,15 +64,15 @@ parser.add_option('-f', '--fraction', dest="fraction",type="string",
 #Other options
 
 parser.add_option('-i', '--interactive', dest="interact", action="store_true",
-        help="Drop into interactive mode at key points")
-parser.add_option('-M', '--conserve-memory', dest="memclear", action="store_true",
-        help="Be ultraconservative with memory")
+                  help="Drop into interactive mode at key points")
+parser.add_option('-M', '--conserve-memory', dest="memclear",
+                  action="store_true", help="Be ultraconservative with memory")
 opts, args = parser.parse_args()
 
 for frac in opts.fraction: 
     STEPSIZE = int(10/frac)
     print "-"*72
-    print "Keeping %f%% of the data "%(100*frac)
+    print "Keeping %f%% of the data " % (100*frac)
     for filename in args:
         # Pull out the base name for saving output
         fname = ''.join(basename(filename).split('.')[:-1])
@@ -83,9 +82,12 @@ for frac in opts.fraction:
                 struct_as_record=True)
 
 
-        xld = D['xl']; yld = D['yl']
-        xrd = D['xr']; yrd = D['yr']
-        varl = D['varxl']; varr = D['varxr']
+        xld = D['xl']
+        yld = D['yl']
+        xrd = D['xr']
+        yrd = D['yr']
+        varl = D['varxl']
+        varr = D['varxr']
         del D
 
 ################################ Filter the Data ###################### 
@@ -101,7 +103,8 @@ for frac in opts.fraction:
 
         stepper = rand(len(xld)) < frac
         
-        if opts.trim_edge:  # Trim the outside border (where points are less reliable)
+        if opts.trim_edge:  
+            # Trim the outside border (where points are less reliable)
             xlo, xhi = Analysis.middle_percent(xld, .02)
             ylo, yhi = Analysis.middle_percent(yld, .02)
             selA = ((xlo < xld) * (xld < xhi) 
@@ -136,7 +139,11 @@ for frac in opts.fraction:
             yr = yrd[sel]
             del yrd, sel
         else:       
-            xl = xld[sel]; yl = yld[sel]; xr = xrd[sel]; yr = yrd[sel];
+            xl = xld[sel]
+            yl = yld[sel]
+            xr = xrd[sel]
+            yr = yrd[sel]
+
 
         if opts.interact: 
             from IPython.Shell import IPShellEmbed
@@ -188,8 +195,8 @@ for frac in opts.fraction:
             for c, r, e in zip(xr, yr, diffmag):
                 c = round(c)
                 r = round(r)
-                diffs[r,c] += e
-                ns[r,c] += 1
+                diffs[r, c] += e
+                ns[r, c] += 1
 
             print "ns are in the range", ns[10:-10, 10:-10].min(), \
                     ns[10:-10, 10:-10].mean(), ns[10:-10, 10:-10].max()
@@ -211,6 +218,6 @@ for frac in opts.fraction:
 
 
         if opts.interact:
-            from pylab import *
+            #from pylab import *
             print '\a\a\a'
             ipshell() 
