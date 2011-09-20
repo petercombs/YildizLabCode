@@ -42,38 +42,38 @@ Step 3: Data-processing
 * This process is very tedious, so I came up with a couple scripts which,
   combined with the CellCounter plugin in ImageJ, makes it only slightly less
   tedious.
-  + For one frame in a series, click on every object of interest in the upper
-    half-field using a Type 2 marker in the Cell Counter.  In the current
-    version of the software, the lower half can also be selected using Type 1
-    markers, but if it isn't , will be automatically calculated using the input
-    map.  This is a huge time saver.
-  + For the rest of the frames in that series, click at least once with a type
-    2 marker, anywhere.
-  + Make sure to leave at least 2-3 completely unmarked frames between each
-    series.
-  + Use the CellCounter to save the XML file.  I almost always accept the
-    default name.
-  + Turn the XML file that CellCounter saves into a WHTrackHighRes-compatible
-    spotlist using XML2Spotlist.  From IPython, it will look something like
-    this: *run XML2spotlist -m 0916-map_1_20 Red-s1_1.xml* 
-
-  + Actually track the spots.  Through some tinkering, I've put together
-    ProcessAll.m, a matlab script that will call WHTrackHighRes on all the
-    spotlists in the current folder with appropriate parameters. This can take a
-    while to run, but requires no human input.  If you aren't using ProcessAll,
-    just run WHTrackDefaults to generate a defaults.mat, and then run
-    WHTrackHighRes on each spotlist. The settings for WHTrackDefaults are:
-    - *Method: Gauss2DJILA*  I'm not certain there's a difference between the
-      different tracking methods, but Processing.py has been tested and gives
-      the same output as this method.
-    - *PixelSize* This will depend on your microscope.  On the Yildiz Lab Scope
-      in Stanley B347, it's 106.667 nm
-    - *PixelPadding*  For tracking beads, I tend to make this a little bit
-      larger, to ensure that it will include the spot in the pixel (and I also
-      make sure not to select beads that are too close together.  For protein,
-      you have less control about how close adjacent spots are, so a lower
-      setting (like 7) seems to work fine.
-
+    + For one frame in a series, click on every object of interest in the upper
+      half-field using a Type 2 marker in the Cell Counter.  In the current
+      version of the software, the lower half can also be selected using Type 1
+      markers, but if it isn't , will be automatically calculated using the input
+      map.  This is a huge time saver.
+    + For the rest of the frames in that series, click at least once with a type
+      2 marker, anywhere.
+    + Make sure to leave at least 2-3 completely unmarked frames between each
+      series.
+    + Use the CellCounter to save the XML file.  I almost always accept the
+      default name.
+    + Turn the XML file that CellCounter saves into a WHTrackHighRes-compatible
+      spotlist using XML2Spotlist.  From IPython, it will look something like
+      this: *run XML2spotlist -m 0916-map_1_20 Red-s1_1.xml* 
+  
+    + Actually track the spots.  Through some tinkering, I've put together
+      ProcessAll.m, a matlab script that will call WHTrackHighRes on all the
+      spotlists in the current folder with appropriate parameters. This can take a
+      while to run, but requires no human input.  If you aren't using ProcessAll,
+      just run WHTrackDefaults to generate a defaults.mat, and then run
+      WHTrackHighRes on each spotlist. The settings for WHTrackDefaults are:
+        - *Method: Gauss2DJILA*  I'm not certain there's a difference between the
+          different tracking methods, but Processing.py has been tested and gives
+          the same output as this method.
+        - *PixelSize* This will depend on your microscope.  On the Yildiz Lab Scope
+          in Stanley B347, it's 106.667 nm
+        - *PixelPadding*  For tracking beads, I tend to make this a little bit
+          larger, to ensure that it will include the spot in the pixel (and I also
+          make sure not to select beads that are too close together.  For protein,
+          you have less control about how close adjacent spots are, so a lower
+          setting (like 7) seems to work fine.
+  
 * For each bead image, generate an "offset map".  Use CombineWHSpots on the
   output for each Bead movie, and when asked if you want to save the output,
   type y. This should generate another map file, and if the name of the beads
