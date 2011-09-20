@@ -63,6 +63,7 @@ Step 3: Data-processing
       while to run, but requires no human input.  If you aren't using ProcessAll,
       just run WHTrackDefaults to generate a defaults.mat, and then run
       WHTrackHighRes on each spotlist. The settings for WHTrackDefaults are:
+
         - *Method: Gauss2DJILA*  I'm not certain there's a difference between the
           different tracking methods, but Processing.py has been tested and gives
           the same output as this method.
@@ -73,7 +74,6 @@ Step 3: Data-processing
           make sure not to select beads that are too close together.  For protein,
           you have less control about how close adjacent spots are, so a lower
           setting (like 7) seems to work fine.
-  
 * For each bead image, generate an "offset map".  Use CombineWHSpots on the
   output for each Bead movie, and when asked if you want to save the output,
   type y. This should generate another map file, and if the name of the beads
