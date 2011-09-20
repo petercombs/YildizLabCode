@@ -63,6 +63,7 @@ Step 3: Data-processing
     while to run, but requires no human input.  If you aren't using ProcessAll,
     just run WHTrackDefaults to generate a defaults.mat, and then run
     WHTrackHighRes on each spotlist. The settings for WHTrackDefaults are:
+
     - *Method: Gauss2DJILA*  I'm not certain there's a difference between the
       different tracking methods, but Processing.py has been tested and gives
       the same output as this method.
