@@ -44,7 +44,7 @@ def get_insight_file(filelist = None):
         filelist = glob('*.txt')
     for i, fname in enumerate(filelist):
         print('[%2d] %s' % (i+1, fname))
-    choice = raw_input("Select datafile from Insight, or give filename:")
+    choice = raw_input("Select datafile from Insight, or give filename: ")
     try:
         return filelist[int(choice) - 1]
     except ValueError as oops:
@@ -64,12 +64,13 @@ def get_framemap(map_name):
     return framemap
 
 def main():
-    mapfile_name = get_filename('Select mapfile, or give filename', 
+    mapfile_name = get_filename('Select mapfile, or give filename: ',
                                 guess = '*_1_20')
 
     #length = get_int('Number of frames per frameset')
-    framemap_name = get_filename('Select Insight to tif mapping file, or give filename',
-                            guess = '*.csv')
+    framemap_name = get_filename('Select Insight to tif mapping file, '
+                                 'or give filename: ',
+                            guess = '*.tsv')
 
     framemap = get_framemap(framemap_name)
 
