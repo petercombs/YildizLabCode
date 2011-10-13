@@ -1,8 +1,12 @@
 from __future__ import print_function
 from Mapping import loadmapping
 from glob import glob
+from math import floor
+from collections import defaultdict
+from csv import reader as csv_reader
 
 dist = 2
+stop = 8
 
 def get_int(prompt):
     while True:
@@ -47,9 +51,29 @@ def get_insight_file(filelist = None):
         print(oops)
         return choice
 
+def get_framemap(map_name):
+    map_file = open(map_name)
+
+    framemap = {}
+
+    for line in csv_reader(map_file):
+        boframe = line[0]
+        start = line[2]
+        stop = line[3]
+        framemap[boframe] = (start, stop)
+    return framemap
+
 def main():
     mapfile_name = get_filename('Select mapfile, or give filename', 
                                 guess = '*_1_20')
+
+    #length = get_int('Number of frames per frameset')
+    framemap_name = get_filename('Select Insight to tif mapping file, or give filename',
+                            guess = '*.csv')
+
+    framemap = get_framemap(framemap_name)
+
+
     mapping = loadmapping(mapfile_name)
 
     spotlistname = raw_input("Name for the spotlist file?")
@@ -57,30 +81,44 @@ def main():
 
     spotlist.write('FileName=%s;\n\n' % get_imagename())
 
-    spotlist.write('Sx\tSy\tStart\tEnd\tPeak\tFlag\n')
+    spotlist.write('Sx\tSy\tStart\tEnd\tFlag\tPeak\n')
 
     datalist = glob('*.txt')
+    n = 1
 
-    while True:
-       fname = get_insight_file(datalist) 
-       try:
-           datalist.remove(fname)
-       except ValueError:
-           pass
+    fname = get_insight_file(datalist) 
+    try:
+       datalist.remove(fname)
+    except ValueError:
+       pass
 
-       start = get_int("Enter starting frame: ")
-       stop = get_int("Enter ending frame: ")
 
-       insight = open(fname)
-       insight.readline()
-       x,y = zip(*((line.split()[1], line.split()[2]) for line in insight))
-       x = map(float, x)
-       y = map(float, y)
+    insight = open(fname)
+    insight.readline()
+    x,y, frame = zip(*((line.split()[1], line.split()[2], line.split()[12]) 
+                      for line in insight))
+    x = map(float, x)
+    y = map(float, y)
 
-       xprime, yprime = mapping(x, y)
+    framesets = defaultdict(list)
 
-       for x1, y1 in zip(x, y):
-           for x2, y2, x2p, y2p in zip(x, y, xprime, yprime):
+    for xi, yi, framei in zip(x, y, frame):
+       framesets[framei].append((xi, yi))
+
+    for frameset in framesets:
+        try:
+           start, stop = framemap[frameset]
+           start = int(start)
+           stop = int(stop)
+        except:
+           print("Can't find start and stops for frame %s" % frameset)
+           start = get_int('Enter start frame ')
+           stop = get_int('Enter stop frame ')
+
+        x, y = zip(*framesets[frameset])
+        xprime, yprime = mapping(x, y)
+        for x1, y1 in zip(x, y):
+            for x2, y2, x2p, y2p in zip(x, y, xprime, yprime):
                if ((x2p - x1)**2 + (y2p - y1)**2) < dist**2:
                    spotlist.write('%d\t%d\t%d\t%d\t%d\t%d\n' %
                                   (round(x1), round(y1), start, stop, 655, n))
@@ -89,9 +127,8 @@ def main():
                    n += 1
                    break #out of the inner loop
 
-       again_q = raw_input("Another frame? [y]/n")
-       if again_q.lower().startswith('n'):
-           break
+        n = floor(n/1000) * 1000 + 1000
+    spotlist.close()
 
 if __name__ == "__main__":
     main()
