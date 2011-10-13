@@ -73,20 +73,17 @@ def main():
                                  'or give filename: ',
                             guess = '*.tsv')
 
+    imname = get_imagename()
     framemap = get_framemap(framemap_name)
 
 
     mapping = loadmapping(mapfile_name)
 
-    spotlistname = raw_input("Name for the spotlist file?")
-    spotlist = open(spotlistname, 'w')
-
-    spotlist.write('FileName=%s;\n\n' % get_imagename())
-
-    spotlist.write('Sx\tSy\tStart\tEnd\tFlag\tPeak\n')
+    spotlistname = raw_input("Base name for the spotlist file? ")
 
     datalist = glob('*.txt')
-    n = 1
+    n = 0
+    k = 0
 
     fname = get_insight_file(datalist) 
     try:
@@ -108,29 +105,35 @@ def main():
        framesets[framei].append((xi, yi))
 
     for frameset in framesets:
+        n = k * 1000
+
+        spotlist = open("%s_%d_spotlist.txt" % (spotlistname, k), 'w')
+        spotlist.write('FileName=%s;\n\n' % imname)
+        spotlist.write('Sx\tSy\tStart\tEnd\tFlag\tPeak\n')
+
         try:
-           start, stop = framemap[frameset]
-           start = int(start)
-           stop = int(stop)
+            start, stop = framemap[frameset]
+            start = int(start)
+            stop = int(stop)
         except:
-           print("Can't find start and stops for frame %s" % frameset)
-           start = get_int('Enter start frame ')
-           stop = get_int('Enter stop frame ')
+            print("Can't find start and stops for frame %s" % frameset)
+            start = get_int('Enter start frame: ')
+            stop = get_int('Enter stop frame: ')
 
         x, y = zip(*framesets[frameset])
         xprime, yprime = mapping(x, y)
         for x1, y1 in zip(x, y):
             for x2, y2, x2p, y2p in zip(x, y, xprime, yprime):
-               if ((x2p - x1)**2 + (y2p - y1)**2) < dist**2:
-                   spotlist.write('%d\t%d\t%d\t%d\t%d\t%d\n' %
+                if ((x2p - x1)**2 + (y2p - y1)**2) < dist**2:
+                    spotlist.write('%d\t%d\t%d\t%d\t%d\t%d\n' %
                                   (round(x1), round(y1), start, stop, 655, n))
-                   spotlist.write('%d\t%d\t%d\t%d\t%d\t%d\n' %
+                    spotlist.write('%d\t%d\t%d\t%d\t%d\t%d\n' %
                                   (round(x2), round(y2), start, stop, 585, n))
-                   n += 1
-                   break #out of the inner loop
+                    n += 1
+                    break #out of the inner loop
 
-        n = floor(n/1000) * 1000 + 1000
-    spotlist.close()
+        k += 1
+        spotlist.close()
 
 if __name__ == "__main__":
     main()
