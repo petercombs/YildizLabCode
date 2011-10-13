@@ -56,7 +56,8 @@ def get_framemap(map_name):
 
     framemap = {}
 
-    for line in csv_reader(map_file):
+    for line in map_file:
+        line = line.split()
         boframe = line[0]
         start = line[2]
         stop = line[3]
