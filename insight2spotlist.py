@@ -2,6 +2,8 @@ from __future__ import print_function
 from Mapping import loadmapping
 from glob import glob
 
+dist = 2
+
 def get_int(prompt):
     while True:
         val = raw_input(prompt)
@@ -29,7 +31,8 @@ def get_imagename():
     choice = raw_input("Select image from list above, or give filename:")
     try:
         return imlist[int(choice) - 1]
-    except:
+    except ValueError as oops:
+        print(oops)
         return choice
 
 def get_insight_file(filelist = None):
@@ -39,14 +42,15 @@ def get_insight_file(filelist = None):
         print('[%2d] %s' % (i+1, fname))
     choice = raw_input("Select datafile from Insight, or give filename:")
     try:
-        return imlist[int(choice) - 1]
-    except:
+        return filelist[int(choice) - 1]
+    except ValueError as oops:
+        print(oops)
         return choice
 
 def main():
     mapfile_name = get_filename('Select mapfile, or give filename', 
                                 guess = '*_1_20')
-    mapping = Mapping.loadmapping(mapfile_name)
+    mapping = loadmapping(mapfile_name)
 
     spotlistname = raw_input("Name for the spotlist file?")
     spotlist = open(spotlistname, 'w')
@@ -61,15 +65,15 @@ def main():
        fname = get_insight_file(datalist) 
        try:
            datalist.remove(fname)
-       except:
+       except ValueError:
            pass
 
        start = get_int("Enter starting frame: ")
-       start = get_int("Enter ending frame: ")
+       stop = get_int("Enter ending frame: ")
 
        insight = open(fname)
        insight.readline()
-       x,y = zip(*((line.split()[1], line.split()[2]) for line in infile))
+       x,y = zip(*((line.split()[1], line.split()[2]) for line in insight))
        x = map(float, x)
        y = map(float, y)
 
